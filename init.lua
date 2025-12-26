@@ -122,7 +122,7 @@ require("lazy").setup({
     end,
   },
 
-  -- Terminal integration for Expo / React Native
+  -- -- Terminal integration for Expo / React Native
   {
     "akinsho/toggleterm.nvim",
     version = "*",
@@ -131,6 +131,7 @@ require("lazy").setup({
         size = 15,
         open_mapping = [[<leader>t]],
         direction = "float",
+        insert_mappings = false
       }
     end,
   },
