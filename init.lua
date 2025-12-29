@@ -144,6 +144,62 @@ require("lazy").setup({
     end,
   },
 
+  -- File explorer (Neo-tree)
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+config = function()
+  require("neo-tree").setup({
+    close_if_last_window = true,
+    popup_border_style = "rounded",
+    enable_git_status = true,
+    enable_diagnostics = true,
+
+    filesystem = {
+      follow_current_file = {
+        enabled = true,
+      },
+      hijack_netrw_behavior = "open_default",
+    },
+
+    window = {
+      position = "left",
+      width = 30,
+      mappings = {
+        ["<CR>"] = "open",           -- Enter opens file
+        ["l"] = "open",              -- l opens file / expands dir
+        ["h"] = "close_node",        -- h collapses dir
+        ["o"] = "open",
+        ["a"] = "add",
+        ["A"] = "add_directory",
+        ["d"] = "delete",
+        ["r"] = "rename",
+        ["q"] = "close_window",
+      },
+    },
+
+ -- Auto close tree after opening a file
+    event_handlers = {
+      {
+        event = "file_opened",
+        handler = function()
+          vim.cmd("Neotree close")
+        end,
+      },
+    },
+  })
+
+  -- Toggle explorer
+  vim.keymap.set("n", "<leader>e", ":Neotree toggle left<CR>", { silent = true })
+end,
+  },
+
+  -- Opencode ai
 {
   "NickvanDyke/opencode.nvim",
   dependencies = {
