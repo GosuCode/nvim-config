@@ -23,7 +23,10 @@ require("lazy").setup({
   {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.5",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = { 
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
     config = function()
       local telescope = require("telescope")
       local builtin = require("telescope.builtin")
@@ -38,6 +41,9 @@ require("lazy").setup({
             "android/build",
             ".expo",
             "ios/build",
+          },
+          preview = {
+            treesitter = false,
           },
         },
       })
