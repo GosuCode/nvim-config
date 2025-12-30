@@ -179,6 +179,20 @@ config = function()
     end,
   },
 
+  -- Commenting (super fast toggle with gcc, gc in visual, etc.)
+  {
+    "numToStr/Comment.nvim",
+    event = "BufReadPost",  -- Lazy-load after reading a file
+    config = true,          -- Uses default setup, which is perfect
+  },
+
+  -- Autopairs (auto-close (), [], {}, "", etc.)
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    config = true,
+  },
+
   -- Code formatter
   {
     "stevearc/conform.nvim",
