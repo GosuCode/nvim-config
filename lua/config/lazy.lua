@@ -138,8 +138,8 @@ config = function()
 
   -- Toggle explorer
   vim.keymap.set("n", "<leader>e", ":Neotree toggle left<CR>", { silent = true })
-end,
-  },
+  end,
+ },
 
   -- Japanese style colorscheme
   {
@@ -159,6 +159,38 @@ end,
         highlight = { enable = true },
         indent = { enable = true },
       })
+    end,
+  },
+
+  -- Code formatter
+  {
+    "stevearc/conform.nvim",
+    config = function()
+      require("conform").setup({
+        formatters_by_ft = {
+          lua = { "stylua" },
+          python = { "black" },
+          javascript = { "prettier" },
+          typescript = { "prettier" },
+          javascriptreact = { "prettier" },
+          typescriptreact = { "prettier" },
+          json = { "prettier" },
+          yaml = { "prettier" },
+          markdown = { "prettier" },
+          rust = { "rustfmt" },
+          go = { "gofmt" },
+          java = { "google-java-format" },
+        },
+        format_on_save = {
+          timeout_ms = 500,
+          lsp_fallback = true,
+        },
+      })
+
+      -- Format keymaps
+      vim.keymap.set("n", "<leader>fm", function()
+        require("conform").format({ async = true, lsp_fallback = true })
+      end, { desc = "Format file" })
     end,
   },
 
