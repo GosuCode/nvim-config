@@ -162,6 +162,23 @@ config = function()
     end,
   },
 
+  -- LSP server manager
+  {
+    "williamboman/mason.nvim",
+    config = function()
+      require("mason").setup()
+    end,
+  },
+
+  -- LSP configurations
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = { "williamboman/mason.nvim" },
+    config = function()
+      require("config.lsp").setup()
+    end,
+  },
+
   -- Code formatter
   {
     "stevearc/conform.nvim",

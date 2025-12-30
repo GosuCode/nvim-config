@@ -36,3 +36,10 @@ map("v", ">", ">gv", opts)
 map("v", "J", ":m '>+1<CR>gv=gv", opts)
 map("v", "K", ":m '<-2<CR>gv=gv", opts)
 
+--------------------------------------------------
+-- LSP KEYMAPS (loaded when LSP attaches)
+--------------------------------------------------
+-- Note: LSP-specific keymaps are defined in
+-- lua/config/lsp/capabilities.lua and are
+-- automatically applied when LSP servers attach
+
