@@ -135,6 +135,27 @@ config = function()
 end,
   },
 
+  -- Japanese style colorscheme
+  {
+    "rebelot/kanagawa.nvim",
+    config = function()
+      vim.cmd("colorscheme kanagawa")
+    end,
+  },
+
+  -- Treesitter for better syntax highlighting
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    config = function()
+      require("nvim-treesitter.config").setup({
+        ensure_installed = { "lua", "vim", "vimdoc", "javascript", "typescript", "python", "rust", "go", "java" },
+        highlight = { enable = true },
+        indent = { enable = true },
+      })
+    end,
+  },
+
   -- Opencode ai
 {
   "NickvanDyke/opencode.nvim",
