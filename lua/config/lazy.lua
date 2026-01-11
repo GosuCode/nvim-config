@@ -3,14 +3,14 @@
 --------------------------------------------------
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazypath,
+	})
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -19,21 +19,21 @@ vim.opt.rtp:prepend(lazypath)
 --------------------------------------------------
 require("lazy").setup({
 
-  -- Telescope (file/search brain)
-  {
-    "nvim-telescope/telescope.nvim",
-    tag = "0.1.5",
-    dependencies = { 
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    config = function()
-      local telescope = require("telescope")
-      local builtin = require("telescope.builtin")
-    
-      telescope.setup({
-        defaults = {
-          file_ignore_patterns = {
+	-- Telescope (file/search brain)
+	{
+		"nvim-telescope/telescope.nvim",
+		tag = "0.1.5",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-treesitter/nvim-treesitter",
+		},
+		config = function()
+			local telescope = require("telescope")
+			local builtin = require("telescope.builtin")
+
+			telescope.setup({
+				defaults = {
+file_ignore_patterns = {
             "node_modules",
             "%.git/",
             "dist",
@@ -42,240 +42,291 @@ require("lazy").setup({
             ".expo",
             "ios/build",
           },
-          preview = {
-            treesitter = false,
-          },
-        },
-      })
-    
-      -- keymaps
-      vim.keymap.set("n", "<Space><Space>", builtin.find_files, { noremap = true, silent = true })
-      vim.keymap.set("n", "<leader>fg", builtin.live_grep,     { noremap = true, silent = true })
-      vim.keymap.set("n", "<leader>fb", builtin.buffers,       { noremap = true, silent = true })
-      vim.keymap.set("n", "<leader>fh", builtin.help_tags,     { noremap = true, silent = true })
-    end,    
-  },
+					preview = {
+						treesitter = false,
+					},
+				},
+			})
 
-  -- Which-key (remember your own keymaps)
-  {
-    "folke/which-key.nvim",
-    config = function()
-      require("which-key").setup({})
-    end,
-  },
+-- keymaps
+      vim.keymap.set("n", "<Space><Space>", function()
+        builtin.find_files({ hidden = true, no_ignore = true })
+      end, { noremap = true, silent = true })
+			vim.keymap.set("n", "<leader>fg", builtin.live_grep, { noremap = true, silent = true })
+			vim.keymap.set("n", "<leader>fb", builtin.buffers, { noremap = true, silent = true })
+			vim.keymap.set("n", "<leader>fh", builtin.help_tags, { noremap = true, silent = true })
+		end,
+	},
 
-  -- -- Terminal integration for Expo / React Native
-  {
-    "akinsho/toggleterm.nvim",
-    version = "*",
-    config = function()
-      require("toggleterm").setup{
-        size = 15,
-        open_mapping = [[<leader>t]],
-        direction = "float",
-        insert_mappings = false
-      }
-    end,
-  },
+	-- Which-key (remember your own keymaps)
+	{
+		"folke/which-key.nvim",
+		config = function()
+			require("which-key").setup({})
+		end,
+	},
 
-  -- Git signs
-  {
-    "lewis6991/gitsigns.nvim",
-    config = function()
-      require("gitsigns").setup()
-    end,
-  },
+	-- -- Terminal integration for Expo / React Native
+	{
+		"akinsho/toggleterm.nvim",
+		version = "*",
+		config = function()
+			require("toggleterm").setup({
+				size = 15,
+				open_mapping = [[<leader>t]],
+				direction = "float",
+				insert_mappings = false,
+			})
+		end,
+	},
 
-  -- File explorer (Neo-tree)
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v3.x",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "MunifTanjim/nui.nvim",
-    },
-config = function()
-  require("neo-tree").setup({
-    close_if_last_window = true,
-    popup_border_style = "rounded",
-    enable_git_status = true,
-    enable_diagnostics = true,
+	-- Git signs
+	{
+		"lewis6991/gitsigns.nvim",
+		config = function()
+			require("gitsigns").setup()
+		end,
+	},
 
-    filesystem = {
-      follow_current_file = {
-        enabled = true,
-      },
-      hijack_netrw_behavior = "open_default",
-    },
+	-- File explorer (Neo-tree)
+	{
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons",
+			"MunifTanjim/nui.nvim",
+		},
+		config = function()
+			require("neo-tree").setup({
+				close_if_last_window = true,
+				popup_border_style = "rounded",
+				enable_git_status = true,
+				enable_diagnostics = true,
 
-    window = {
-      position = "left",
-      width = 30,
-      mappings = {
-        ["<CR>"] = "open",           -- Enter opens file
-        ["l"] = "open",              -- l opens file / expands dir
-        ["h"] = "close_node",        -- h collapses dir
-        ["o"] = "open",
-        ["a"] = "add",
-        ["A"] = "add_directory",
-        ["d"] = "delete",
-        ["r"] = "rename",
-        ["q"] = "close_window",
-      },
-    },
+				filesystem = {
+					follow_current_file = {
+						enabled = true,
+					},
+					hijack_netrw_behavior = "open_default",
+					filtered_items = {
+						visible = true,
+						show_hidden_count = true,
+						hide_dotfiles = false,
+						hide_gitignored = true,
+						never_show = {
+							".git",
+							"node_modules",
+							"dist",
+							".vite",
+							".next",
+							".vscode",
+						},
+					},
+				},
 
- -- Auto close tree after opening a file
-    event_handlers = {
-      {
-        event = "file_opened",
-        handler = function()
-          vim.cmd("Neotree close")
-        end,
-      },
-    },
-  })
+				window = {
+					position = "left",
+					width = 30,
+					mappings = {
+						["<CR>"] = "open", -- Enter opens file
+						["l"] = "open", -- l opens file / expands dir
+						["h"] = "close_node", -- h collapses dir
+						["o"] = "open",
+						["a"] = "add",
+						["A"] = "add_directory",
+						["d"] = "delete",
+						["r"] = "rename",
+						["q"] = "close_window",
+					},
+				},
 
-  -- Toggle explorer
-  vim.keymap.set("n", "<leader>e", ":Neotree toggle left<CR>", { silent = true })
-  end,
- },
+				-- Auto close tree after opening a file
+				event_handlers = {
+					{
+						event = "file_opened",
+						handler = function()
+							vim.cmd("Neotree close")
+						end,
+					},
+				},
+			})
 
-  -- Japanese style colorscheme
-  {
-    "rebelot/kanagawa.nvim",
-    config = function()
-      vim.cmd("colorscheme kanagawa")
-    end,
-  },
+			-- Toggle explorer
+			vim.keymap.set("n", "<leader>e", ":Neotree toggle left<CR>", { silent = true })
+		end,
+	},
 
-  -- Treesitter for better syntax highlighting
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    config = function()
-      require("nvim-treesitter.config").setup({
-        ensure_installed = { "lua", "vim", "vimdoc", "javascript", "typescript", "python", "rust", "go", "java" },
-        highlight = { enable = true },
-        indent = { enable = true },
-      })
-    end,
-  },
+	-- Japanese style colorscheme
+	{
+		"rebelot/kanagawa.nvim",
+		config = function()
+			vim.cmd("colorscheme kanagawa")
+		end,
+	},
 
-  -- LSP server manager
-  {
-    "williamboman/mason.nvim",
-    config = function()
-      require("mason").setup()
-    end,
-  },
+	-- Treesitter for better syntax highlighting
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		config = function()
+			require("nvim-treesitter.config").setup({
+				ensure_installed = {
+					"lua",
+					"vim",
+					"vimdoc",
+					"javascript",
+					"typescript",
+					"python",
+					"rust",
+					"go",
+					"java",
+				},
+				highlight = { enable = true },
+				indent = { enable = true },
+			})
+		end,
+	},
 
-  -- LSP configurations
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = { "williamboman/mason.nvim" },
-    config = function()
-      require("config.lsp").setup()
-    end,
-  },
+	-- LSP server manager
+	{
+		"williamboman/mason.nvim",
+		config = function()
+			require("mason").setup()
+		end,
+	},
 
-  -- Commenting (super fast toggle with gcc, gc in visual, etc.)
-  {
-    "numToStr/Comment.nvim",
-    event = "BufReadPost",  -- Lazy-load after reading a file
-    config = true,          -- Uses default setup, which is perfect
-  },
+	-- LSP configurations
+	{
+		"neovim/nvim-lspconfig",
+		dependencies = { "williamboman/mason.nvim" },
+		config = function()
+			require("config.lsp").setup()
+		end,
+	},
 
-  -- Autopairs (auto-close (), [], {}, "", etc.)
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    config = true,
-  },
+	-- Commenting (super fast toggle with gcc, gc in visual, etc.)
+	{
+		"numToStr/Comment.nvim",
+		event = "BufReadPost", -- Lazy-load after reading a file
+		config = true, -- Uses default setup, which is perfect
+	},
 
-  -- Code formatter
-  {
-    "stevearc/conform.nvim",
-    config = function()
-      require("conform").setup({
-        formatters_by_ft = {
-          lua = { "stylua" },
-          python = { "black" },
-          javascript = { "prettier" },
-          typescript = { "prettier" },
-          javascriptreact = { "prettier" },
-          typescriptreact = { "prettier" },
-          json = { "prettier" },
-          yaml = { "prettier" },
-          markdown = { "prettier" },
-          rust = { "rustfmt" },
-          go = { "gofmt" },
-          java = { "google-java-format" },
-        },
-        format_on_save = {
-          timeout_ms = 500,
-          lsp_fallback = true,
-        },
-      })
+	-- Autopairs (auto-close (), [], {}, "", etc.)
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = true,
+	},
 
-      -- Format keymaps
-      vim.keymap.set("n", "<leader>fm", function()
-        require("conform").format({ async = true, lsp_fallback = true })
-      end, { desc = "Format file" })
-    end,
-  },
+	-- Code formatter
+	{
+		"stevearc/conform.nvim",
+		config = function()
+			require("conform").setup({
+				formatters_by_ft = {
+					lua = { "stylua" },
+					python = { "black" },
+					javascript = { "prettier" },
+					typescript = { "prettier" },
+					javascriptreact = { "prettier" },
+					typescriptreact = { "prettier" },
+					json = { "prettier" },
+					yaml = { "prettier" },
+					markdown = { "prettier" },
+					rust = { "rustfmt" },
+					go = { "gofmt" },
+					java = { "google-java-format" },
+				},
+				format_on_save = {
+					timeout_ms = 500,
+					lsp_fallback = true,
+				},
+			})
 
-  -- Opencode ai
-{
-  "NickvanDyke/opencode.nvim",
-  dependencies = {
-    -- Recommended for `ask()` and `select()`.
-    -- Required for `snacks` provider.
-    ---@module 'snacks' <- Loads `snacks.nvim` types for configuration intellisense.
-    { "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
-  },
-  config = function()
-    ---@type opencode.Opts
-    vim.g.opencode_opts = {
-      -- Your configuration, if any — see `lua/opencode/config.lua`, or "goto definition".
-    }
+			-- Format keymaps
+			vim.keymap.set("n", "<leader>fm", function()
+				require("conform").format({ async = true, lsp_fallback = true })
+			end, { desc = "Format file" })
+		end,
+	},
 
-    -- Required for `opts.events.reload`.
-    vim.o.autoread = true
+	-- Opencode ai
+	{
+		"NickvanDyke/opencode.nvim",
+		dependencies = {
+			-- Recommended for `ask()` and `select()`.
+			-- Required for `snacks` provider.
+			---@module 'snacks' <- Loads `snacks.nvim` types for configuration intellisense.
+			{ "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
+		},
+		config = function()
+			---@type opencode.Opts
+			vim.g.opencode_opts = {
+				-- Your configuration, if any — see `lua/opencode/config.lua`, or "goto definition".
+			}
 
-    -- Recommended/example keymaps.
-    vim.keymap.set({ "n", "x" }, "<C-a>", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask opencode" })
-    vim.keymap.set({ "n", "x" }, "<C-x>", function() require("opencode").select() end,                          { desc = "Execute opencode action…" })
-    vim.keymap.set({ "n", "t" }, "<C-.>", function() require("opencode").toggle() end,                          { desc = "Toggle opencode" })
+			-- Required for `opts.events.reload`.
+			vim.o.autoread = true
 
-    vim.keymap.set({ "n", "x" }, "go",  function() return require("opencode").operator("@this ") end,        { expr = true, desc = "Add range to opencode" })
-    vim.keymap.set("n",          "goo", function() return require("opencode").operator("@this ") .. "_" end, { expr = true, desc = "Add line to opencode" })
+			-- Recommended/example keymaps.
+			vim.keymap.set({ "n", "x" }, "<C-a>", function()
+				require("opencode").ask("@this: ", { submit = true })
+			end, { desc = "Ask opencode" })
+			vim.keymap.set({ "n", "x" }, "<C-x>", function()
+				require("opencode").select()
+			end, { desc = "Execute opencode action…" })
+			vim.keymap.set({ "n", "t" }, "<C-.>", function()
+				require("opencode").toggle()
+			end, { desc = "Toggle opencode" })
 
-    vim.keymap.set("n", "<S-C-u>", function() require("opencode").command("session.half.page.up") end,   { desc = "opencode half page up" })
-    vim.keymap.set("n", "<S-C-d>", function() require("opencode").command("session.half.page.down") end, { desc = "opencode half page down" })
+			vim.keymap.set({ "n", "x" }, "go", function()
+				return require("opencode").operator("@this ")
+			end, { expr = true, desc = "Add range to opencode" })
+			vim.keymap.set("n", "goo", function()
+				return require("opencode").operator("@this ") .. "_"
+			end, { expr = true, desc = "Add line to opencode" })
 
-    -- You may want these if you stick with the opinionated "<C-a>" and "<C-x>" above — otherwise consider "<leader>o".
-    vim.keymap.set("n", "+", "<C-a>", { desc = "Increment", noremap = true })
-    vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement", noremap = true })
-  end,
-},
+			vim.keymap.set("n", "<S-C-u>", function()
+				require("opencode").command("session.half.page.up")
+			end, { desc = "opencode half page up" })
+			vim.keymap.set("n", "<S-C-d>", function()
+				require("opencode").command("session.half.page.down")
+			end, { desc = "opencode half page down" })
 
-{
-  "ThePrimeagen/harpoon",
-  branch = "harpoon2",
-  dependencies = { "nvim-lua/plenary.nvim" },
-  config = function()
-    local harpoon = require("harpoon")
-    harpoon:setup()
+			-- You may want these if you stick with the opinionated "<C-a>" and "<C-x>" above — otherwise consider "<leader>o".
+			vim.keymap.set("n", "+", "<C-a>", { desc = "Increment", noremap = true })
+			vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement", noremap = true })
+		end,
+	},
 
-    vim.keymap.set("n", "<leader>a", function() harpoon:list():append() end)
-    vim.keymap.set("n", "<leader>hh", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+	{
+		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			local harpoon = require("harpoon")
+			harpoon:setup()
 
-    vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end)
-    vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end)
-    vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end)
-    vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end)
-  end,
-}
+			vim.keymap.set("n", "<leader>a", function()
+				harpoon:list():append()
+			end)
+			vim.keymap.set("n", "<leader>hh", function()
+				harpoon.ui:toggle_quick_menu(harpoon:list())
+			end)
 
+			vim.keymap.set("n", "<leader>1", function()
+				harpoon:list():select(1)
+			end)
+			vim.keymap.set("n", "<leader>2", function()
+				harpoon:list():select(2)
+			end)
+			vim.keymap.set("n", "<leader>3", function()
+				harpoon:list():select(3)
+			end)
+			vim.keymap.set("n", "<leader>4", function()
+				harpoon:list():select(4)
+			end)
+		end,
+	},
 })

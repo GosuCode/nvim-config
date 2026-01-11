@@ -26,3 +26,6 @@ vim.opt.smartcase = true
 vim.opt.colorcolumn = "100"
 vim.opt.textwidth = 80
 vim.api.nvim_set_hl(0, "ColorColumn", { bg = "#3b0000" })
+
+-- Show hidden files
+vim.opt.wildignore = ""
