@@ -23,4 +23,6 @@ vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-
+vim.opt.colorcolumn = "100"
+vim.opt.textwidth = 80
+vim.api.nvim_set_hl(0, "ColorColumn", { bg = "#3b0000" })
