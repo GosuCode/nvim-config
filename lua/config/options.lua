@@ -30,3 +30,9 @@ vim.api.nvim_set_hl(0, "ColorColumn", { bg = "#3b0000" })
 
 -- Show hidden files
 vim.opt.wildignore = ""
+
+-- Disable unused language providers (silences checkhealth warnings)
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0

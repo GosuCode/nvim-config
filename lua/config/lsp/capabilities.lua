@@ -53,7 +53,7 @@ function M.on_attach(client, bufnr)
   nmap("<leader>e", vim.diagnostic.open_float, "Open Diagnostic [E]rror")
 
   -- Format on save (if client supports it)
-  if client.supports_method("textDocument/formatting") then
+  if client:supports_method("textDocument/formatting") then
     vim.api.nvim_create_autocmd("BufWritePre", {
       group = vim.api.nvim_create_augroup("LspFormat." .. bufnr, {}),
       buffer = bufnr,

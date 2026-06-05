@@ -4,6 +4,41 @@
 local M = {}
 
 function M.setup()
+  vim.filetype.add({
+    pattern = {
+      [".*docker%-compose.*%.ya?ml"] = "yaml.docker-compose",
+      [".*gitlab%-ci.*%.ya?ml"] = "yaml.gitlab",
+      ["values%.ya?ml"] = "yaml.helm-values",
+      [".*%.astro"] = "astro",
+      [".*%.edge"] = "edge",
+      [".*%.ejs"] = "ejs",
+      [".*%.erb"] = "erb",
+      [".*%.gohtml"] = "gohtml",
+      [".*%.hbs"] = "handlebars",
+      [".*%.heex"] = "heex",
+      [".*%.jade"] = "jade",
+      [".*%.leaf"] = "leaf",
+      [".*%.mdx"] = "markdown.mdx",
+      [".*%.njk"] = "njk",
+      [".*%.nunjucks"] = "nunjucks",
+      [".*%.slim"] = "slim",
+      [".*%.pcss"] = "postcss",
+      [".*%.postcss"] = "postcss",
+      [".*%.sss"] = "sugarss",
+      [".*%.cshtml"] = "aspnetcorerazor",
+      [".*%.razor"] = "aspnetcorerazor",
+      [".*%.re"] = "reason",
+    },
+    extension = {
+      djangohtml = "django-html",
+      gohtmltmpl = "gohtmltmpl",
+      hbs = "hbs",
+      mdx = "mdx",
+      ["astro-markdown"] = "astro-markdown",
+      ["html-eex"] = "html-eex",
+    },
+  })
+
   local servers = {
     -- MERN Core
     "ts_ls",             -- TypeScript/JavaScript (Node.js, React, etc.)

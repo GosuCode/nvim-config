@@ -62,7 +62,11 @@ require("lazy").setup({
 	{
 		"folke/which-key.nvim",
 		config = function()
-			require("which-key").setup({})
+			require("which-key").setup({
+				icons = {
+					provider = "nvim-web-devicons",
+				},
+			})
 		end,
 	},
 
@@ -85,6 +89,23 @@ require("lazy").setup({
 		"lewis6991/gitsigns.nvim",
 		config = function()
 			require("gitsigns").setup()
+		end,
+	},
+
+	-- Git UI (LazyGit inside Neovim)
+	{
+		"kdheepak/lazygit.nvim",
+		dependencies = { "akinsho/toggleterm.nvim" },
+		config = function()
+			vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<CR>", { desc = "Open LazyGit" })
+		end,
+	},
+
+	-- Side-by-side diff view
+	{
+		"sindrets/diffview.nvim",
+		config = function()
+			vim.keymap.set("n", "<leader>gd", "<cmd>DiffviewOpen<CR>", { desc = "Open Diffview" })
 		end,
 	},
 
@@ -153,7 +174,7 @@ require("lazy").setup({
 			})
 
 			-- Toggle explorer
-			vim.keymap.set("n", "<leader>e", ":Neotree toggle left<CR>", { silent = true })
+			vim.keymap.set("n", "<leader>fe", ":Neotree toggle left<CR>", { silent = true })
 		end,
 	},
 
@@ -162,6 +183,93 @@ require("lazy").setup({
 		"rebelot/kanagawa.nvim",
 		config = function()
 			vim.cmd("colorscheme kanagawa")
+		end,
+	},
+
+	-- Statusline
+	{
+		"nvim-lualine/lualine.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("lualine").setup({
+				options = {
+					theme = "kanagawa",
+					component_separators = { left = "", right = "" },
+					section_separators = { left = "", right = "" },
+				},
+				sections = {
+					lualine_a = { "mode" },
+					lualine_b = { "branch", "diff", "diagnostics" },
+					lualine_c = { "filename" },
+					lualine_x = { "filetype" },
+					lualine_y = { "progress" },
+					lualine_z = { "location" },
+				},
+			})
+		end,
+	},
+
+	-- Tabline (file tabs at top)
+	{
+		"akinsho/bufferline.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("bufferline").setup({
+				options = {
+					mode = "buffers",
+					separator_style = "slant",
+					show_buffer_close_icons = false,
+					show_close_icon = false,
+				},
+			})
+			vim.keymap.set("n", "<Tab>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
+			vim.keymap.set("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Prev buffer" })
+			vim.keymap.set("n", "<C-Tab>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
+			vim.keymap.set("n", "<C-S-Tab>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Prev buffer" })
+		end,
+	},
+
+	-- Indent guides
+	{
+		"lukas-reineke/indent-blankline.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("ibl").setup({
+				indent = { char = "│" },
+				scope = { enabled = false },
+			})
+		end,
+	},
+
+	-- Better command line + notifications
+	{
+		"folke/noice.nvim",
+		dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
+		event = "VeryLazy",
+		config = function()
+			require("noice").setup({
+				lsp = {
+					override = {
+						"vim.lsp.util.convert_input_to_markdown_lines",
+						"vim.lsp.util.stylize_markdown",
+					},
+				},
+				presets = {
+					bottom_search = true,
+					command_palette = true,
+					long_message_to_split = true,
+				},
+			})
+		end,
+	},
+
+	-- Diagnostics list (Trouble)
+	{
+		"folke/trouble.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			require("trouble").setup()
+			vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<CR>", { desc = "Toggle Trouble" })
 		end,
 	},
 
@@ -238,6 +346,50 @@ require("lazy").setup({
 		end,
 	},
 
+	-- Debugger
+	{
+		"mfussenegger/nvim-dap",
+		config = function()
+			vim.keymap.set("n", "<leader>db", function()
+				require("dap").toggle_breakpoint()
+			end, { desc = "Toggle breakpoint" })
+			vim.keymap.set("n", "<leader>dc", function()
+				require("dap").continue()
+			end, { desc = "Continue" })
+			vim.keymap.set("n", "<leader>do", function()
+				require("dap").step_over()
+			end, { desc = "Step over" })
+			vim.keymap.set("n", "<leader>di", function()
+				require("dap").step_into()
+			end, { desc = "Step into" })
+			vim.keymap.set("n", "<leader>du", function()
+				require("dap").step_out()
+			end, { desc = "Step out" })
+		end,
+	},
+	{
+		"rcarriga/nvim-dap-ui",
+		dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
+		config = function()
+			local dap, dapui = require("dap"), require("dapui")
+			dapui.setup()
+			dap.listeners.before.attach.dapui = dapui.open
+			dap.listeners.before.launch.dapui = dapui.open
+			dap.listeners.before.event_terminated.dapui = dapui.close
+			dap.listeners.before.event_exited.dapui = dapui.close
+		end,
+	},
+	{
+		"jay-babu/mason-nvim-dap.nvim",
+		dependencies = { "williamboman/mason.nvim" },
+		config = function()
+			require("mason-nvim-dap").setup({
+				ensure_installed = { "node2", "python" },
+				automatic_installation = true,
+			})
+		end,
+	},
+
 	-- Commenting (super fast toggle with gcc, gc in visual, etc.)
 	{
 		"numToStr/Comment.nvim",
@@ -267,9 +419,7 @@ require("lazy").setup({
 					json = { "prettier" },
 					yaml = { "prettier" },
 					markdown = { "prettier" },
-					rust = { "rustfmt" },
 					go = { "gofmt" },
-					java = { "google-java-format" },
 				},
 				format_on_save = {
 					timeout_ms = 500,
@@ -311,7 +461,7 @@ require("lazy").setup({
 			-- Recommended for `ask()` and `select()`.
 			-- Required for `snacks` provider.
 			---@module 'snacks' <- Loads `snacks.nvim` types for configuration intellisense.
-			{ "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
+			{ "folke/snacks.nvim", lazy = false, priority = 1000, opts = { input = {}, picker = {}, terminal = {} } },
 		},
 		config = function()
 			---@type opencode.Opts
@@ -383,6 +533,69 @@ require("lazy").setup({
 		end,
 	},
 
+	-- Highlight TODO/FIXME/HACK comments
+	{
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		event = "BufReadPost",
+		config = function()
+			require("todo-comments").setup({
+				signs = true,
+				keywords = {
+					FIX = { icon = "", color = "error" },
+					TODO = { icon = "", color = "info" },
+					HACK = { icon = "", color = "warning" },
+					NOTE = { icon = "", color = "hint" },
+				},
+			})
+		end,
+	},
+
+	-- Lightning-fast cursor jumps
+	{
+		url = "https://codeberg.org/andyg/leap.nvim",
+		config = function()
+			vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap-forward)")
+			vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>(leap-backward)")
+			vim.keymap.set("n", "gs", "<Plug>(leap-from-window)")
+		end,
+	},
+
+	-- Code outline sidebar
+	{
+		"stevearc/aerial.nvim",
+		config = function()
+			require("aerial").setup({
+				backends = { "lsp", "treesitter", "markdown" },
+				show_guides = true,
+			})
+			vim.keymap.set("n", "<leader>os", "<cmd>AerialToggle<CR>", { desc = "Toggle Outline" })
+		end,
+	},
+
+	-- HTTP / REST client
+	{
+		"rest-nvim/rest.nvim",
+		ft = "http",
+		config = function()
+			require("rest-nvim").setup({
+				result_split_in_place = true,
+				stick_with_host = true,
+			})
+		end,
+	},
+
+	-- Task runner (npm test, docker build, terraform plan, etc.)
+	{
+		"stevearc/overseer.nvim",
+		config = function()
+			require("overseer").setup({
+				task_list = { direction = "bottom", bindings = { ["q"] = "Close" } },
+			})
+			vim.keymap.set("n", "<leader>rr", "<cmd>OverseerRun<CR>", { desc = "Run Task" })
+			vim.keymap.set("n", "<leader>rl", "<cmd>OverseerToggle<CR>", { desc = "Task List" })
+		end,
+	},
 
   {
   'hrsh7th/nvim-cmp',
