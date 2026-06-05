@@ -26,6 +26,14 @@ function M.setup()
     "pyright",           -- Python
     "lua_ls",            -- Lua (Neovim config)
     "vimls",             -- Vimscript
+
+    -- Docs & Infrastructure
+    "marksman",          -- Markdown
+    "docker_compose_language_service", -- Docker Compose
+    "terraformls",       -- Terraform
+
+    -- Java
+    "jdtls",             -- Java (Eclipse JDT LS)
   }
 
   for _, server in ipairs(servers) do

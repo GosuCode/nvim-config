@@ -219,6 +219,10 @@ require("lazy").setup({
 					"pyright",
 					"lua_ls",
 					"vimls",
+					"marksman",
+					"docker_compose_language_service",
+					"terraformls",
+					"jdtls",
 				},
 				automatic_installation = true,
 			})
