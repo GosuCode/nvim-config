@@ -33,26 +33,26 @@ require("lazy").setup({
 
 			telescope.setup({
 				defaults = {
-file_ignore_patterns = {
-            "node_modules",
-            "%.git/",
-            "dist",
-            "build",
-            "android/build",
-            ".expo",
-            "ios/build",
-          },
+					file_ignore_patterns = {
+						"node_modules",
+						"%.git/",
+						"dist",
+						"build",
+						"android/build",
+						".expo",
+						"ios/build",
+					},
 					preview = {
 						treesitter = false,
 					},
 				},
 			})
 
--- keymaps
-      vim.keymap.set("n", "<Space><Space>", function()
-        builtin.find_files({ hidden = true, no_ignore = true })
-      end, { noremap = true, silent = true })
-			vim.keymap.set("n", "<leader>fg", builtin.live_grep, { noremap = true, silent = true })
+			-- keymaps
+			vim.keymap.set("n", "<Space><Space>", function()
+				builtin.find_files({ hidden = true, no_ignore = true })
+			end, { noremap = true, silent = true })
+			vim.keymap.set("n", "<leader>fg", builtin.live_grep, { noremap = true, silent = true }) -- search word
 			vim.keymap.set("n", "<leader>fb", builtin.buffers, { noremap = true, silent = true })
 			vim.keymap.set("n", "<leader>fh", builtin.help_tags, { noremap = true, silent = true })
 		end,
@@ -196,6 +196,35 @@ file_ignore_patterns = {
 		end,
 	},
 
+	-- Auto-install LSP servers via Mason
+	{
+		"williamboman/mason-lspconfig.nvim",
+		dependencies = { "williamboman/mason.nvim" },
+		config = function()
+			require("mason-lspconfig").setup({
+				ensure_installed = {
+					"ts_ls",
+					"eslint",
+					"tailwindcss",
+					"nextls",
+					"prismals",
+					"graphql",
+					"sqlls",
+					"html",
+					"cssls",
+					"jsonls",
+					"dockerls",
+					"yamlls",
+					"bashls",
+					"pyright",
+					"lua_ls",
+					"vimls",
+				},
+				automatic_installation = true,
+			})
+		end,
+	},
+
 	-- LSP configurations
 	{
 		"neovim/nvim-lspconfig",
@@ -242,12 +271,32 @@ file_ignore_patterns = {
 					timeout_ms = 500,
 					lsp_fallback = true,
 				},
+				-- Enable automatic line breaking
+				format_on_save = {
+					timeout_ms = 500,
+					lsp_fallback = true,
+				},
+				formatters = {
+					prettier = {
+						args = { "--tab-width=2", "--use-tabs=false", "--print-width=80" },
+					},
+					stylua = {
+						args = { "--column-width=120", "--line-endings=Unix" },
+					},
+				},
 			})
 
 			-- Format keymaps
 			vim.keymap.set("n", "<leader>fm", function()
 				require("conform").format({ async = true, lsp_fallback = true })
 			end, { desc = "Format file" })
+
+			-- Toggle auto-format
+			vim.keymap.set("n", "<leader>tf", function()
+				vim.g.autoformat = not vim.g.autoformat
+				local msg = vim.g.autoformat and "Auto-format enabled" or "Auto-format disabled"
+				vim.notify(msg, vim.log.levels.INFO)
+			end, { desc = "Toggle auto-format" })
 		end,
 	},
 
@@ -329,4 +378,81 @@ file_ignore_patterns = {
 			end)
 		end,
 	},
+
+
+  {
+  'hrsh7th/nvim-cmp',
+  event = 'InsertEnter',
+  dependencies = {
+    {
+      'L3MON4D3/LuaSnip',
+      build = (function()
+        if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
+          return
+        end
+        return 'make install_jsregexp'
+      end)(),
+      dependencies = {
+        {
+          'rafamadriz/friendly-snippets',
+          config = function()
+            require('luasnip.loaders.from_vscode').lazy_load()
+          end,
+        },
+      },
+    },
+    'saadparwaiz1/cmp_luasnip',
+    'hrsh7th/cmp-nvim-lsp',
+    'hrsh7th/cmp-path',
+  },
+  config = function()
+    local cmp = require('cmp')
+    local luasnip = require('luasnip')
+
+    luasnip.config.setup({})
+
+    cmp.setup({
+      snippet = {
+        expand = function(args)
+          luasnip.lsp_expand(args.body)
+        end,
+      },
+
+      completion = { completeopt = 'menu,menuone,noinsert' },
+
+      mapping = cmp.mapping.preset.insert({
+        ['<C-n>'] = cmp.mapping.select_next_item(),
+        ['<C-p>'] = cmp.mapping.select_prev_item(),
+
+        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+
+        ['<Tab>'] = cmp.mapping.select_next_item(),
+        ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+
+        ['<C-Space>'] = cmp.mapping.complete(),
+
+        ['<C-l>'] = cmp.mapping(function()
+          if luasnip.expand_or_locally_jumpable() then
+            luasnip.expand_or_jump()
+          end
+        end, { 'i', 's' }),
+
+        ['<C-h>'] = cmp.mapping(function()
+          if luasnip.locally_jumpable(-1) then
+            luasnip.jump(-1)
+          end
+        end, { 'i', 's' }),
+      }),
+
+      sources = {
+        { name = 'nvim_lsp' },
+        { name = 'luasnip' },
+        { name = 'path' },
+      },
+    })
+  end
+}
 })
