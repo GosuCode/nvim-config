@@ -129,7 +129,13 @@ require("lazy").setup({
 	{
 		"sindrets/diffview.nvim",
 		config = function()
-			vim.keymap.set("n", "<leader>gd", "<cmd>DiffviewOpen<CR>", { desc = "Open Diffview" })
+			vim.keymap.set("n", "<leader>gd", function()
+				if require("diffview.lib").get_current_view() then
+					vim.cmd("DiffviewClose")
+				else
+					vim.cmd("DiffviewOpen")
+				end
+			end, { desc = "Toggle Diffview" })
 		end,
 	},
 
@@ -250,6 +256,7 @@ require("lazy").setup({
 			vim.keymap.set("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Prev buffer" })
 			vim.keymap.set("n", "<C-Tab>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
 			vim.keymap.set("n", "<C-S-Tab>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Prev buffer" })
+			vim.keymap.set("n", "<leader>q", "<cmd>bd<CR>", { desc = "Close buffer" })
 		end,
 	},
 
