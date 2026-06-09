@@ -51,10 +51,10 @@ require("lazy").setup({
 			-- keymaps
 			vim.keymap.set("n", "<Space><Space>", function()
 				builtin.find_files({ hidden = true, no_ignore = true })
-			end, { noremap = true, silent = true })
-			vim.keymap.set("n", "<leader>fg", builtin.live_grep, { noremap = true, silent = true }) -- search word
-			vim.keymap.set("n", "<leader>fb", builtin.buffers, { noremap = true, silent = true })
-			vim.keymap.set("n", "<leader>fh", builtin.help_tags, { noremap = true, silent = true })
+			end, { noremap = true, silent = true, desc = "Find files" })
+			vim.keymap.set("n", "<leader>fg", builtin.live_grep, { noremap = true, silent = true, desc = "Live grep" })
+			vim.keymap.set("n", "<leader>fb", builtin.buffers, { noremap = true, silent = true, desc = "Buffers" })
+			vim.keymap.set("n", "<leader>fh", builtin.help_tags, { noremap = true, silent = true, desc = "Help tags" })
 		end,
 	},
 
@@ -66,6 +66,30 @@ require("lazy").setup({
 				icons = {
 					provider = "nvim-web-devicons",
 				},
+				preset = "helix",
+				layout = {
+					align = "left",
+					spacing = 1,
+				},
+				win = {
+					border = "rounded",
+					padding = { 1, 2 },
+					wo = {
+						winblend = 10,
+					},
+				},
+			})
+			require("which-key").add({
+				{ "<leader>f", group = "Find" },
+				{ "<leader>g", group = "Git" },
+				{ "<leader>d", group = "Debug" },
+				{ "<leader>r", group = "Run" },
+				{ "<leader>o", group = "Open" },
+				{ "<leader>x", group = "Diagnostics" },
+				{ "<leader>h", group = "Harpoon" },
+				{ "<leader>m", group = "Markdown" },
+				{ "<leader>z", group = "Zen" },
+				{ "<leader>u", group = "Toggle" },
 			})
 		end,
 	},
@@ -174,7 +198,7 @@ require("lazy").setup({
 			})
 
 			-- Toggle explorer
-			vim.keymap.set("n", "<leader>fe", ":Neotree toggle left<CR>", { silent = true })
+			vim.keymap.set("n", "<leader>fe", ":Neotree toggle left<CR>", { silent = true, desc = "File explorer" })
 		end,
 	},
 
@@ -258,6 +282,40 @@ require("lazy").setup({
 					bottom_search = true,
 					command_palette = true,
 					long_message_to_split = true,
+					lsp_doc_border = true,
+				},
+				views = {
+					cmdline_popup = {
+						position = {
+							row = 5,
+							col = "50%",
+						},
+						size = {
+							min_width = 60,
+							width = "auto",
+							height = "auto",
+						},
+					},
+					popupmenu = {
+						relative = "editor",
+						position = {
+							row = 8,
+							col = "50%",
+						},
+						size = {
+							width = 60,
+							max_width = 80,
+							height = "auto",
+							max_height = 15,
+						},
+						border = {
+							style = "rounded",
+							padding = { 0, 1 },
+						},
+						win_options = {
+							winhighlight = { Normal = "NormalFloat", FloatBorder = "FloatBorder" },
+						},
+					},
 				},
 			})
 		end,
@@ -357,16 +415,16 @@ require("lazy").setup({
 			end, { desc = "Toggle breakpoint" })
 			vim.keymap.set("n", "<leader>dc", function()
 				require("dap").continue()
-			end, { desc = "Continue" })
+			end, { desc = "Debug continue" })
 			vim.keymap.set("n", "<leader>do", function()
 				require("dap").step_over()
-			end, { desc = "Step over" })
+			end, { desc = "Debug step over" })
 			vim.keymap.set("n", "<leader>di", function()
 				require("dap").step_into()
-			end, { desc = "Step into" })
+			end, { desc = "Debug step into" })
 			vim.keymap.set("n", "<leader>du", function()
 				require("dap").step_out()
-			end, { desc = "Step out" })
+			end, { desc = "Debug step out" })
 		end,
 	},
 	{
@@ -448,7 +506,7 @@ require("lazy").setup({
 			end, { desc = "Format file" })
 
 			-- Toggle auto-format
-			vim.keymap.set("n", "<leader>tf", function()
+			vim.keymap.set("n", "<leader>uf", function()
 				vim.g.autoformat = not vim.g.autoformat
 				local msg = vim.g.autoformat and "Auto-format enabled" or "Auto-format disabled"
 				vim.notify(msg, vim.log.levels.INFO)
@@ -477,27 +535,27 @@ require("lazy").setup({
 			-- Recommended/example keymaps.
 			vim.keymap.set({ "n", "x" }, "<C-a>", function()
 				require("opencode").ask("@this: ", { submit = true })
-			end, { desc = "Ask opencode" })
+			end, { desc = "OpenCode ask" })
 			vim.keymap.set({ "n", "x" }, "<C-x>", function()
 				require("opencode").select()
-			end, { desc = "Execute opencode action…" })
+			end, { desc = "OpenCode action" })
 			vim.keymap.set({ "n", "t" }, "<C-.>", function()
 				require("opencode").toggle()
-			end, { desc = "Toggle opencode" })
+			end, { desc = "OpenCode toggle" })
 
 			vim.keymap.set({ "n", "x" }, "go", function()
 				return require("opencode").operator("@this ")
-			end, { expr = true, desc = "Add range to opencode" })
+			end, { expr = true, desc = "OpenCode add range" })
 			vim.keymap.set("n", "goo", function()
 				return require("opencode").operator("@this ") .. "_"
-			end, { expr = true, desc = "Add line to opencode" })
+			end, { expr = true, desc = "OpenCode add line" })
 
 			vim.keymap.set("n", "<S-C-u>", function()
 				require("opencode").command("session.half.page.up")
-			end, { desc = "opencode half page up" })
+			end, { desc = "OpenCode half page up" })
 			vim.keymap.set("n", "<S-C-d>", function()
 				require("opencode").command("session.half.page.down")
-			end, { desc = "opencode half page down" })
+			end, { desc = "OpenCode half page down" })
 
 			-- You may want these if you stick with the opinionated "<C-a>" and "<C-x>" above — otherwise consider "<leader>o".
 			vim.keymap.set("n", "+", "<C-a>", { desc = "Increment", noremap = true })
@@ -515,23 +573,23 @@ require("lazy").setup({
 
 			vim.keymap.set("n", "<leader>a", function()
 				harpoon:list():append()
-			end)
+			end, { desc = "Harpoon add" })
 			vim.keymap.set("n", "<leader>hh", function()
 				harpoon.ui:toggle_quick_menu(harpoon:list())
-			end)
+			end, { desc = "Harpoon menu" })
 
 			vim.keymap.set("n", "<leader>1", function()
 				harpoon:list():select(1)
-			end)
+			end, { desc = "Harpoon 1" })
 			vim.keymap.set("n", "<leader>2", function()
 				harpoon:list():select(2)
-			end)
+			end, { desc = "Harpoon 2" })
 			vim.keymap.set("n", "<leader>3", function()
 				harpoon:list():select(3)
-			end)
+			end, { desc = "Harpoon 3" })
 			vim.keymap.set("n", "<leader>4", function()
 				harpoon:list():select(4)
-			end)
+			end, { desc = "Harpoon 4" })
 		end,
 	},
 
@@ -557,9 +615,9 @@ require("lazy").setup({
 	{
 		url = "https://codeberg.org/andyg/leap.nvim",
 		config = function()
-			vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap-forward)")
-			vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>(leap-backward)")
-			vim.keymap.set("n", "gs", "<Plug>(leap-from-window)")
+			vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap-forward)", { desc = "Leap forward" })
+			vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>(leap-backward)", { desc = "Leap backward" })
+			vim.keymap.set("n", "gs", "<Plug>(leap-from-window)", { desc = "Leap from window" })
 		end,
 	},
 
@@ -686,7 +744,7 @@ require("lazy").setup({
 			})
 			vim.keymap.set("n", "<leader>md", function()
 				render.toggle()
-			end, { desc = "Toggle markdown render" })
+			end, { desc = "Markdown render toggle" })
 			local group = vim.api.nvim_create_augroup("RenderMarkdownUser", { clear = true })
 			vim.api.nvim_create_autocmd("InsertEnter", {
 				group = group,
