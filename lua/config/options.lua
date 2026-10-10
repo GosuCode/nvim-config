@@ -13,18 +13,29 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.smartindent = true
-vim.opt.wrap = false
+vim.opt.breakindent = true
+vim.opt.wrap = true
+vim.opt.linebreak = true
 vim.opt.termguicolors = true
 vim.opt.cursorline = true
 vim.opt.undofile = true
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.clipboard = "unnamedplus"
+-- xsel occasionally fails with BadWindow on X11; force xclip
+if vim.fn.executable("xclip") == 1 then
+  vim.g.clipboard = {
+    name = "xclip",
+    copy = { ["+"] = "xclip -selection clipboard", ["*"] = "xclip -selection primary" },
+    paste = { ["+"] = "xclip -selection clipboard -o", ["*"] = "xclip -selection primary -o" },
+    cache_enabled = 0,
+  }
+end
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.colorcolumn = "100"
+vim.opt.colorcolumn = ""
 vim.opt.textwidth = 80
 vim.api.nvim_set_hl(0, "ColorColumn", { bg = "#3b0000" })
 
