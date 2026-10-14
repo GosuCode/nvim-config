@@ -499,10 +499,10 @@ require("lazy").setup({
 				},
 				formatters = {
 					prettier = {
-						args = { "--tab-width=2", "--use-tabs=false", "--print-width=80" },
+						prepend_args = { "--tab-width=2", "--use-tabs=false", "--print-width=80" },
 					},
 					stylua = {
-						args = { "--column-width=120", "--line-endings=Unix" },
+						prepend_args = { "--column-width=120", "--line-endings=Unix" },
 					},
 				},
 			})
